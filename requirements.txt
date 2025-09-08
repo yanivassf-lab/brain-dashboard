@@ -1,0 +1,22 @@
+#panel
+#pandas
+#numpy
+#scipy
+#statsmodels
+#plotly
+#nilearn
+#matplotlib
+#param
+#watchdog
+#dotenv
+
+
+#flask
+#flask_sqlalchemy
+#flask_admin
+
+#For readthedocs
+# =============
+sphinx
+sphinx_rtd_theme
+myst-parser
