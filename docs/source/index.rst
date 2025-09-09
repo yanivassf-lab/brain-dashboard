@@ -10,7 +10,8 @@ Contents:
    running
    usage
 
+Developed by Refael Kohen <refael.kohen@gmail.com>,
+Yaniv Assaf Lab, Tel Aviv University.
 
-Getting help
-------------
-If you find issues or omissions, please open an issue in the repository and add the "docs" label.
+
+

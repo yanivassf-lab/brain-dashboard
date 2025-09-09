@@ -77,7 +77,7 @@ Typical Admin workflow:
 
     where RAW_FILE_NAME is the name of the raw file (e.g., 20211117_101656T1wMPRAGERLs003a1001.nii).
 
-4. **Update the features of the user:** Update the `$PROJECT_ROOT/config/users_features.csv` file with the featuers of the user (e.g., age, gender, etc.).
+4. **Update the features of the user:** Update the `$PROJECT_ROOT/config/users_features.csv` file with the featuers of the user (e.g., age, gender, etc.). The first column must be the "file_name" of the raw data file, and the other columns are the features of the user.
 
     Example CSV (users_features.csv):
 

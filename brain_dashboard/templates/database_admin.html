@@ -1,0 +1,219 @@
+{% extends 'admin/master.html' %}
+{% block title %}Statistics - Brain Dashboard Admin{% endblock %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><i class="fa fa-database"></i> Database Statistics</h2>
+            <hr>
+        </div>
+    </div>
+    
+    <!-- Basic Statistics -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Basic Statistics</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-box">
+                                <h4>{{ user_count }}</h4>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-box">
+                                <h4>{{ analysis_count }}</h4>
+                                <p>Analysis Results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-check-circle"></i> Analysis Status</h3>
+                </div>
+                <div class="panel-body">
+                    {% if analysis_status_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    {% for status, count in analysis_status_stats %}
+                                    <tr>
+                                        <td>
+                                            <span class="label label-{% if status == 'completed' %}success{% elif status == 'failed' %}danger{% elif status == 'processing' %}warning{% else %}info{% endif %}">
+                                                {{ status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-right"><strong>{{ count }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No analysis status data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Status and Statistical Tests -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-users"></i> User Status</h3>
+                </div>
+                <div class="panel-body">
+                    {% if user_status_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    {% for status, count in user_status_stats %}
+                                    <tr>
+                                        <td>
+                                            <span class="label label-{% if status == 'freesurfer_completed' %}success{% elif status == 'freesurfer_failed' %}danger{% elif status == 'freesurfer_processing' %}warning{% elif status == 'update_table_completed' %}success{% elif status == 'update_table_failed' %}danger{% elif status == 'update_table_processing' %}warning{% else %}info{% endif %}">
+                                                {{ status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-right"><strong>{{ count }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No user status data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-calculator"></i> Statistical Tests</h3>
+                </div>
+                <div class="panel-body">
+                    {% if statistical_test_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    {% for test, count in statistical_test_stats %}
+                                    <tr>
+                                        <td>
+                                            <span class="label label-default">
+                                                {{ test }}
+                                            </span>
+                                        </td>
+                                        <td class="text-right"><strong>{{ count }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No statistical test data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<style>
+.stat-box {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.stat-box h4 {
+    font-size: 2.5em;
+    margin: 0;
+    color: #1976D2;
+    font-weight: bold;
+}
+
+.stat-box p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.panel {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.panel-heading {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    color: white;
+    border: none;
+    padding: 12px 15px;
+}
+
+.panel-heading .panel-title {
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+.panel-heading .fa {
+    margin-right: 8px;
+}
+
+
+.table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.label {
+    font-size: 0.8em;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.label-success {
+    background-color: #4CAF50;
+}
+
+.label-danger {
+    background-color: #f44336;
+}
+
+.label-warning {
+    background-color: #ff9800;
+}
+
+.label-info {
+    background-color: #2196F3;
+}
+
+h2 {
+    color: #1976D2;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+h2 .fa {
+    margin-right: 10px;
+    color: #1976D2;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,311 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3" style="height: 80vh; display: flex; flex-direction: column;">
+            <form method="post">
+                <h3>Run Freesurfer</h3>
+                    <div class="form-group">
+                        <label for="user_id_freesurfer">Select preprocessed run:</label>
+                        <select name="user_id_freesurfer" id="user_id_freesurfer" class="form-control">
+                            {% for user in users_for_freesurfer %}
+                            <option value="{{ user.user_id }}">{{ user.user_id }} &mdash; {{ user.file_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class="btn-group" role="group">
+                            <button type="submit" name="action" value="run_reconall" class="btn btn-primary">Run Freesurfer Recon-All
+                            </button>
+                        </div>
+                    </div>
+
+                <hr>
+                <h3>Update Freesurfer table</h3>
+                    <div class="form-group">
+                        <label for="user_id_update_table">Select succeeded run:</label>
+                        <select name="user_id_update_table" id="user_id_update_table" class="form-control">
+                            {% for user in users_for_update_table %}
+                            <option value="{{ user.user_id }}">{{ user.user_id }} &mdash; {{ user.file_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class="btn-group" role="group">
+                            <button type="submit" name="action" value="run_update_table" class="btn btn-primary">Update Freesurfer Table
+                            </button>
+                        </div>
+                    </div>
+                <hr>
+
+                <div style="margin-top: auto;">
+                    <div class="btn-group" role="group">
+                        <button type="submit" name="action" value="update_db" class="btn btn-default">Update DB</button>
+                    </div>
+                    <p class="help-block" style="margin-top: 10px;">Imports new files from the data folder.</p>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-9">
+            <h4>Recent users</h4>
+            <div class="form-group" style="max-width: 320px;">
+                <input id="global-filter" type="text" class="form-control" placeholder="Filter all columns...">
+            </div>
+            <div class="table-responsive">
+
+                <table id="recent-users-table" class="table table-striped">
+                    <thead>
+                    <tr>
+                        {% set cols = display_columns if display_columns else ['user_id','file_name'] + (char_columns if
+                        char_columns else []) + ['status'] %}
+                        {% for col in cols %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for col in cols %}
+                        {% set spec = (column_specs[col] if column_specs and col in column_specs else {'type':'text'})
+                        %}
+                        <th>
+                            {% if spec.type == 'numeric' %}
+                            <div class="row" style="margin-left:0;margin-right:0;">
+                                <input class="col-filter-num form-control input-sm" data-col="{{ loop.index0 }}"
+                                       data-bound="min" type="number" step="any" placeholder="Min"
+                                       style="width:48%; display:inline-block;">
+                                <input class="col-filter-num form-control input-sm" data-col="{{ loop.index0 }}"
+                                       data-bound="max" type="number" step="any" placeholder="Max"
+                                       style="width:48%; display:inline-block; float:right;">
+                            </div>
+                            {% elif spec.type == 'categorical' %}
+                            <select class="col-filter-select form-control input-sm" data-col="{{ loop.index0 }}">
+                                <option value="">All</option>
+                                {% for ch in spec.choices %}
+                                <option value="{{ ch }}">{{ ch }}</option>
+                                {% endfor %}
+                            </select>
+                            {% else %}
+                            <input class="col-filter form-control input-sm" data-col="{{ loop.index0 }}" type="text"
+                                   placeholder="Filter...">
+                            {% endif %}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set rows = merged_rows if merged_rows else [] %}
+                    {% for row in rows %}
+                    <tr>
+                        {% for col in cols %}
+                        <td>
+                            {% if col == 'status' %}
+                                {% set status = row[col] if col in row else '' %}
+                                <span class="label label-{% if status == 'freesurfer_completed' or status == 'update_table_completed' %}success{% elif status == 'freesurfer_failed' or status == 'update_table_failed' %}danger{% elif status == 'freesurfer_processing' or status == 'update_table_processing' %}warning{% else %}info{% endif %}">
+                                    {{ status }}
+                                </span>
+                            {% else %}
+                                {{ row[col] if col in row else '' }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <style>
+                .table-responsive {
+                    overflow-x: auto;
+                }
+
+                #recent-users-table {
+                    /* Set a minimum width for the entire table */
+                    min-width: 900px; /* You can adjust this value as needed */
+                }
+
+                #recent-users-table thead th {
+                    color: #1976D2;
+                    /* Set a minimum width for the header cells */
+                    min-width: 150px; /* Adjust this to give columns more space */
+                }
+
+                #recent-users-table tbody td {
+                    /* Set a minimum width for the data cells */
+                    min-width: 150px; /* Adjust this to match the header width */
+                }
+
+                #recent-users-table thead input.col-filter {
+                    font-size: 12px;
+                    padding: 4px 6px;
+                }
+                
+                .label {
+                    font-size: 0.8em;
+                    padding: 4px 8px;
+                    border-radius: 3px;
+                }
+                
+                .label-success {
+                    background-color: #4CAF50;
+                }
+                
+                .label-danger {
+                    background-color: #f44336;
+                }
+                
+                .label-warning {
+                    background-color: #ff9800;
+                }
+                
+                .label-info {
+                    background-color: #2196F3;
+                }
+            </style>
+            <script>
+                (function () {
+                    var table = document.getElementById('recent-users-table');
+                    if (!table) return;
+
+                    function getCellValue(tr, idx) {
+                        var td = tr.querySelectorAll('td')[idx];
+                        return td ? td.textContent.trim() : '';
+                    }
+
+                    function compare(idx, asc) {
+                        return function (a, b) {
+                            var v1 = getCellValue(asc ? a : b, idx);
+                            var v2 = getCellValue(asc ? b : a, idx);
+                            var n1 = parseFloat(v1.replace(/[^0-9.-]/g, ''));
+                            var n2 = parseFloat(v2.replace(/[^0-9.-]/g, ''));
+                            var bothNumeric = !isNaN(n1) && !isNaN(n2) && v1 !== '' && v2 !== '';
+                            if (bothNumeric) {
+                                return n1 - n2;
+                            }
+                            return v1.localeCompare(v2);
+                        };
+                    }
+
+                    // Sorting on first header row only
+                    var ths = table.querySelectorAll('thead tr:first-child th');
+                    for (var i = 0; i < ths.length; i++) {
+                        (function (idx) {
+                            var th = ths[idx];
+                            th.style.cursor = 'pointer';
+                            var asc = true;
+                            th.addEventListener('click', function () {
+                                var tbody = table.tBodies[0];
+                                Array.prototype.slice.call(tbody.querySelectorAll('tr'))
+                                    .sort(compare(idx, asc = !asc))
+                                    .forEach(function (tr) {
+                                        tbody.appendChild(tr);
+                                    });
+                            });
+                        })(i);
+                    }
+
+                    // Filtering (global + column)
+                    function applyFilters() {
+                        var tbody = table.tBodies[0];
+                        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+                        var globalInp = document.getElementById('global-filter');
+                        var globalVal = globalInp ? (globalInp.value || '').toLowerCase() : '';
+                        var textInputs = Array.prototype.slice.call(document.querySelectorAll('#recent-users-table thead input.col-filter'));
+                        var numInputs = Array.prototype.slice.call(document.querySelectorAll('#recent-users-table thead input.col-filter-num'));
+                        var selectInputs = Array.prototype.slice.call(document.querySelectorAll('#recent-users-table thead select.col-filter-select'));
+                        rows.forEach(function (tr) {
+                            var tds = tr.querySelectorAll('td');
+                            var visible = true;
+                            if (globalVal) {
+                                var any = false;
+                                for (var i = 0; i < tds.length; i++) {
+                                    if ((tds[i].textContent || '').toLowerCase().indexOf(globalVal) !== -1) {
+                                        any = true;
+                                        break;
+                                    }
+                                }
+                                if (!any) visible = false;
+                            }
+                            if (visible) {
+                                // Text filters
+                                for (var j = 0; j < textInputs.length; j++) {
+                                    var inp = textInputs[j];
+                                    var idx = parseInt(inp.getAttribute('data-col'));
+                                    var val = (inp.value || '').toLowerCase();
+                                    if (!isNaN(idx) && val) {
+                                        var cell = tds[idx];
+                                        var cellText = cell ? (cell.textContent || '').toLowerCase() : '';
+                                        if (cellText.indexOf(val) === -1) {
+                                            visible = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                // Numeric filters
+                                if (visible) {
+                                    // Group numeric inputs by column index
+                                    var bounds = {};
+                                    for (var k = 0; k < numInputs.length; k++) {
+                                        var n = numInputs[k];
+                                        var cidx = parseInt(n.getAttribute('data-col'));
+                                        var b = n.getAttribute('data-bound');
+                                        bounds[cidx] = bounds[cidx] || {min: null, max: null};
+                                        var v = n.value;
+                                        if (b === 'min') bounds[cidx].min = v !== '' ? parseFloat(v) : null;
+                                        if (b === 'max') bounds[cidx].max = v !== '' ? parseFloat(v) : null;
+                                    }
+                                    for (var cidxStr in bounds) {
+                                        var cidx = parseInt(cidxStr);
+                                        var cell = tds[cidx];
+                                        if (!cell) continue;
+                                        var num = parseFloat((cell.textContent || '').replace(/[^0-9.-]/g, ''));
+                                        var minv = bounds[cidx].min, maxv = bounds[cidx].max;
+                                        if (!isNaN(num)) {
+                                            if (minv !== null && num < minv) {
+                                                visible = false;
+                                                break;
+                                            }
+                                            if (maxv !== null && num > maxv) {
+                                                visible = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                // Select filters
+                                if (visible) {
+                                    for (var s = 0; s < selectInputs.length; s++) {
+                                        var sel = selectInputs[s];
+                                        var sidx = parseInt(sel.getAttribute('data-col'));
+                                        var sval = sel.value;
+                                        if (sval) {
+                                            var cell = tds[sidx];
+                                            var txt = cell ? (cell.textContent || '') : '';
+                                            if (txt !== sval) {
+                                                visible = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tr.style.display = visible ? '' : 'none';
+                        });
+                    }
+
+                    var globalFilter = document.getElementById('global-filter');
+                    if (globalFilter) globalFilter.addEventListener('input', applyFilters);
+                    Array.prototype.slice.call(document.querySelectorAll('#recent-users-table thead input.col-filter, #recent-users-table thead input.col-filter-num'))
+                        .forEach(function (inp) {
+                            inp.addEventListener('input', applyFilters);
+                        });
+                    Array.prototype.slice.call(document.querySelectorAll('#recent-users-table thead select.col-filter-select'))
+                        .forEach(function (sel) {
+                            sel.addEventListener('change', applyFilters);
+                        });
+                })();
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

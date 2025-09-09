@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["brain_dashboard*", ".env", "scripts"]
+
+[project]
+name = "brain-dashboard"
+version = "0.1.0"
+description = "A dashboard for brain data analysis"
+authors = [
+    { name="Refael Kohen", email="refael.kohen@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "watchdog",
+    "panel",
+    "pandas",
+    "numpy",
+    "scipy",
+    "statsmodels",
+    "plotly",
+    "nilearn",
+    "matplotlib",
+    "param",
+    "dotenv",
+    "flask",
+    "flask_sqlalchemy",
+    "flask_admin",
+]
+
+[project.scripts]
+run-app = "brain_dashboard.scripts.run_app:main"
+admin-app = "brain_dashboard.scripts.admin_app:main"
+watch-folder = "brain_dashboard.scripts.watch_folder:main"
+freesurfer = "brain_dashboard.scripts.freesurfer:main"
