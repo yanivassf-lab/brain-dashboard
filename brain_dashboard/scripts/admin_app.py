@@ -393,7 +393,11 @@ def download_result():
     return send_file(file_path, as_attachment=True)
 
 
-if __name__ == '__main__':
+
+def main():
     with FLASK_APP.app_context():
         db.create_all()
     FLASK_APP.run(host='127.0.0.1', port=PORT_ADMIN, debug=True)
+
+if __name__ == '__main__':
+    main()

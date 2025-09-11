@@ -96,13 +96,15 @@ class Command:
         observer.join()
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description="Watch a folder for new files.")
     cmd = Command()
     cmd.add_arguments(parser)
     args = parser.parse_args()
     cmd.handle(**vars(args))
 
+if __name__ == '__main__':
+    main()
 # This script watches a specified folder for new files and processes them
 # Usage as a module:
 #   python -m brain_dashboard.scripts.watch_folder --folder data --interval 30

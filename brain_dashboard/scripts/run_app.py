@@ -14,7 +14,7 @@ def create_app():
     app = BrainAnalysisApp()
     return app.create_layout()
 
-if __name__ == "__main__":
+def main():
     pn.serve(
         create_app,
         port=PORT_APP,
@@ -22,6 +22,9 @@ if __name__ == "__main__":
         show=True,
         autoreload=True
     )
+
+if __name__ == '__main__':
+    main()
 
 """
 Instructions to run the app:

@@ -149,8 +149,7 @@ class FreeSurfer:
                 self.update_table(existing_file=existing_file, new_subject_file=tablefile_path)
                 logger.info(f"Updated table {existing_file} with subjects: {subject_names}")
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Run FreeSurfer processing for a user.")
     parser.add_argument("--file-name", type=str, required=True, help="File name to process")
     parser.add_argument("--recon-all", action='store_true', help="Run recon-all command")
@@ -197,6 +196,8 @@ if __name__ == "__main__":
                 raise RuntimeError(f"Updating FreeSurfer tables failed for user {user.file_name}: {e}")
             db.session.commit()
 
+if __name__ == "__main__":
+    main()
 """
 Instructions to run FreeSurfer processing and update tables for a user:
 1. Ensure the Flask application and database are set up correctly.
