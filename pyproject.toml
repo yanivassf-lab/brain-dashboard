@@ -31,6 +31,9 @@ dependencies = [
     "flask_admin",
 ]
 
+[tool.setuptools.package-data]
+brain_dashboard = ["templates/*.html", "templates/**/*.html"]
+
 [project.scripts]
 run-app = "brain_dashboard.scripts.run_app:main"
 admin-app = "brain_dashboard.scripts.admin_app:main"
