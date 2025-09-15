@@ -10,11 +10,31 @@ Prerequisites
 - **virtualenv**
 - **FreeSurfer** (if you will run FreeSurfer processing locally)
 
+The system can be installed on both Linux and Mac operating systems.
+
 FreeSurfer Setup
 ----------------
 
-If you need to run FreeSurfer processing, download it from https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall and
-install FreeSurfer according to their documentation. Set the required environment variables in your `.env` file (see bellow).
+To run FreeSurfer processing, download it from the official website and install it following their documentation:
+https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall
+
+**Remember:**
+
+- Download and install: https://surfer.nmr.mgh.harvard.edu/fswiki/rel7downloads
+- Verify prerequisites: https://surfer.nmr.mgh.harvard.edu/fswiki/BuildRequirements
+- Place the ``license.txt`` file in the appropriate folder, as described here:
+  https://surfer.nmr.mgh.harvard.edu/registration.html
+- Check the installation by running the following commands in the ``bash`` shell (``/bin/bash``):
+
+  .. code-block:: bash
+
+      export FREESURFER_HOME=/Applications/freesurfer/8.0.0
+      source /Applications/freesurfer/8.0.0/SetUpFreeSurfer.sh
+      recon-all --help
+      asegstats2table --help
+      aparcstats2table --help
+
+After installation, set the required environment variables in your ``.env`` file (see below).
 
 Quick Install
 -------------
@@ -27,7 +47,7 @@ Quick Install
 
     .. code-block:: bash
 
-        PROJECT_ROOT=/absolute/path/to/brain-dashboard-project
+        PROJECT_ROOT=/path/to/brain-dashboard-project
         mkdir -p $PROJECT_ROOT
 
     For example,
@@ -42,15 +62,15 @@ Quick Install
 
         .. code-block:: bash
 
-            mkdir -p $PROJECT_ROOT/freesurfer_output                # for FreeSurfer tables and folders of the outputs
-            mkdir -p $PROJECT_ROOT/config                           # for storing features of the users
-            mkdir -p $PROJECT_ROOT/analyses                         # for storing analysis results
-            mkdir -p $PROJECT_ROOT/instances                        # for storing database instances
-            mkdir -p $PROJECT_ROOT/logs                             # for storing log files
-            touch $PROJECT_ROOT/freesurfer_output/aparc_lh.csv      # create empty file for FreeSurfer left aparc
-            touch $PROJECT_ROOT/freesurfer_output/aparc_rh.csv      # create empty file for FreeSurfer left aparc
-            touch $PROJECT_ROOT/freesurfer_output/aseg_volumes.csv  # create empty file for FreeSurfer aseg volumes
-            touch $PROJECT_ROOT/config/users_features.csv           # create empty file for user features
+            mkdir -p $PROJECT_ROOT/runs/freesurfer_output                # for FreeSurfer tables and folders of the outputs
+            mkdir -p $PROJECT_ROOT/runs/config                           # for storing features of the users
+            mkdir -p $PROJECT_ROOT/runs/analyses                         # for storing analysis results
+            mkdir -p $PROJECT_ROOT/runs/instance                        # for storing database instances
+            mkdir -p $PROJECT_ROOT/runs/logs                             # for storing log files
+            touch $PROJECT_ROOT/runs/freesurfer_output/aparc_lh.csv      # create empty file for FreeSurfer left aparc
+            touch $PROJECT_ROOT/runs/freesurfer_output/aparc_rh.csv      # create empty file for FreeSurfer left aparc
+            touch $PROJECT_ROOT/runs/freesurfer_output/aseg_volumes.csv  # create empty file for FreeSurfer aseg volumes
+            touch $PROJECT_ROOT/runs/config/users_features.csv           # create empty file for user features
 
 2. **Create and activate a virtual environment**
 
@@ -72,7 +92,7 @@ Quick Install
     .. code-block:: bash
 
         cd $PROJECT_ROOT
-        git clone ...
+        git clone https://github.com/yanivassf-lab/brain-dashboard.git
 
 
 
@@ -109,11 +129,11 @@ Place a file named `.env` in trust location, the path to the file will be saved 
 .. code-block:: bash
 
    FLASK_SECRET_KEY=dev-secret-key-2adsf4kl0acasd32e2drq346f8b
-   PYTHON_EXECUTABLE=/ve-brain-dashboard/bin/python
-   PROJECT_ROOT=$PROJECT_ROOT
+   PYTHON_EXECUTABLE=/path/to/brain-dashboard-project/brain-dashboard-venv/bin/python
+   PROJECT_ROOT=/path/to/brain-dashboard-project
    DATA_DIR=/rawdata
-   FREESURFER_HOME=/Applications/freesurfer/8.0.0/
-   SUBJECTS_DIR=$PROJECT_ROOT/freeview_output
+   FREESURFER_HOME=/Applications/freesurfer/8.0.0
+   SUBJECTS_DIR=/path/to/brain-dashboard-project/runs/freesurfer_output
    FREESURFER_ENV_FILE=/Applications/freesurfer/8.0.0/SetUpFreeSurfer.sh
    PORT_APP=5006
    PORT_ADMIN=5000

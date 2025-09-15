@@ -18,7 +18,7 @@ Quick Install
     For example,
         .. code-block:: bash
 
-            export DEFAULT_ENV_PATH=$HOME/brain-dashboard-project/.env
+            export DEFAULT_ENV_PATH=$PROJECT_ROOT/.env
 
 2. **Run the admin site**
     From the project root, activate your virtual environment and run:
@@ -26,8 +26,8 @@ Quick Install
     .. code-block:: bash
 
         source $PROJECT_ROOT/brain-dashboard-venv/bin/activate
-        export DEFAULT_ENV_PATH=$HOME/brain-dashboard-project/.env
-        $PROJECT_ROOT/brain-dashboard-venv/bin/python -m brain_dashboard.admin_app
+        export DEFAULT_ENV_PATH=$PROJECT_ROOT/brain-dashboard-project/.env
+        admin-app
 
     The admin interface will be available at `http://localhost:5000/admin/statistics` (or the port you specified in your `.env` file).
 
@@ -37,15 +37,15 @@ Quick Install
     .. code-block:: bash
 
         source $PROJECT_ROOT/brain-dashboard-venv/bin/activate
-        export DEFAULT_ENV_PATH=$HOME/brain-dashboard-project/.env
-        $PROJECT_ROOT/brain-dashboard-venv/bin/python -m brain_dashboard.run_app
+        export DEFAULT_ENV_PATH=$PROJECT_ROOT/brain-dashboard-project/.env
+        run-app
 
     The main application will be available at `http://localhost:5006` (or the port you specified in your `.env` file).
 
 Running Background Scripts with Crontab
 ---------------------------------------
 
-To automate data processing, you may want to run `watch_folder.py` and `freesurfer.py` as background tasks using `cron`.
+To automate data processing, you may want to run `watch_folder.py` as background tasks using `cron`.
 
 **1. Edit your crontab:**
 
@@ -62,6 +62,6 @@ To automate data processing, you may want to run `watch_folder.py` and `freesurf
 
 **Notes:**
 
-- Replace `/path/to/brain-dashboard` with `$PROJECT_ROOT/brain-dashboard-venv/bin/python`,  and `/path/to/logs` with `$PROJECT_ROOT/logs/watch_folder.log`.
+- Replace `/path/to/brain-dashboard` with `$PROJECT_ROOT/brain-dashboard-venv/bin/python`,  and `/path/to/logs` with `$PROJECT_ROOT/runs/logs/watch_folder.log`.
 
 - The `--once` flag ensures the script runs only once per invocation.
